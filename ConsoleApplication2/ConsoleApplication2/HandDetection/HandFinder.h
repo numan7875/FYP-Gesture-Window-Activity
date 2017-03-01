@@ -10,7 +10,7 @@ using namespace std;
 class HandFinder{
 private:
     cv::CascadeClassifier classifier;
-    
+
     cv::Rect detect_max_obj(cv::Mat& img, cv::CascadeClassifier& classifier, double scale){
         vector<cv::Rect> objs;
         vector<cv::Rect> objs_src;
@@ -19,7 +19,7 @@ private:
         cv::cvtColor(img, gray, CV_BGR2GRAY);
         cv::resize(gray, small_img, small_img.size(), 0, 0, cv::INTER_LINEAR);
         cv::equalizeHist(small_img, small_img);
-        
+
         classifier.detectMultiScale(small_img, objs, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE|CV_HAAR_FIND_BIGGEST_OBJECT, cv::Size(30,30));
         if(objs.size()>0)
         {
@@ -29,16 +29,16 @@ private:
         }
         return cv::Rect(0,0,0,0);
     }
-    
+
 public:
     HandFinder(string training_file){
         if(!this->classifier.load(training_file)){
             cout << "failed to load training file" << endl;
         }
     }
-    
+
     ~HandFinder(){}
-    
+
     cv::Rect find(cv::Mat &raw){
         cv::Mat half;
         cv::resize(raw, half, cv::Size(raw.cols/2, raw.rows/2));

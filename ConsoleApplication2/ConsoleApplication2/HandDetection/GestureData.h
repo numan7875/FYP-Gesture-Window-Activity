@@ -9,14 +9,14 @@
 struct SampleTemplates
 {
     vector<vector<Vec2f> > raw_paths;
-    
+
     SampleTemplates(){
         raw_paths.push_back(getGestureCircle());
         raw_paths.push_back(getGesturePigtail());
         raw_paths.push_back(getGestureTriangle());
         raw_paths.push_back(getGestureV());
     }
-    
+
     vector<Vec2f> getGestureCircle()
     {
         vector<Vec2f> path;
@@ -64,10 +64,10 @@ struct SampleTemplates
         path.push_back(Vec2f(140,131));
         path.push_back(Vec2f(129,136));
         path.push_back(Vec2f(126,139));
-        
+
         return path;
     }
-    
+
     vector<Vec2f> getGesturePigtail()
     {
         vector<Vec2f> path;
@@ -136,10 +136,10 @@ struct SampleTemplates
         path.push_back(Vec2f(196,213));
         path.push_back(Vec2f(199,212));
         path.push_back(Vec2f(201,211));
-        
+
         return path;
     }
-    
+
     vector<Vec2f> getGestureTriangle()
     {
         vector<Vec2f> path;
@@ -209,10 +209,10 @@ struct SampleTemplates
         path.push_back(Vec2f(143,150));
         path.push_back(Vec2f(138,148));
         path.push_back(Vec2f(136,148));
-        
+
         return path;
     }
-    
+
     vector<Vec2f> getGestureV()
     {
         vector<Vec2f> path;
@@ -263,7 +263,7 @@ struct SampleTemplates
         path.push_back(Vec2f(164,150));
         path.push_back(Vec2f(165,148));
         path.push_back(Vec2f(166,146));
-        
+
         return path;
     }
 };
