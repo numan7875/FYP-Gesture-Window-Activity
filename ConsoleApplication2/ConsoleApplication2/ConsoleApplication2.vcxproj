@@ -25,14 +25,14 @@
     <Xml Include="palm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\GestureData.h" />
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\HandFinder.hpp" />
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\HandTracker.hpp" />
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\OneDollar.hpp" />
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\Utility\Utility.h" />
+    <ClInclude Include="HandDetection\HandFinder.h" />
+    <ClInclude Include="HandDetection\HandTracker.h" />
+    <ClInclude Include="HandDetection\Utility.h" />
+    <ClInclude Include="KNNChar.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\main.cpp" />
+    <ClCompile Include="KNNChar.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{76E4B27E-DFCB-4325-86D1-FEFC5C9340F5}</ProjectGuid>

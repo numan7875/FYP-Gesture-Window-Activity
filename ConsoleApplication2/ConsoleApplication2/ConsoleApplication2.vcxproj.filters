@@ -21,24 +21,24 @@
     <Xml Include="palm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\GestureData.h">
+    <ClInclude Include="HandDetection\HandFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\HandFinder.hpp">
+    <ClInclude Include="HandDetection\HandTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\HandTracker.hpp">
+    <ClInclude Include="HandDetection\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\HandDetection\OneDollar.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\Utility\Utility.h">
+    <ClInclude Include="KNNChar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\ICITIAN%27S FYP\FYP-I\Code\ConsoleApplication2\ConsoleApplication2\main.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KNNChar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,7 +5,6 @@
 #include <list>
 #include <opencv2/opencv.hpp>
 
-#include "OneDollar.hpp"
 
 using namespace std;
 
@@ -15,6 +14,7 @@ using namespace std;
 #define MAX_POINTS 128
 
 #define DISTANCE(x1,y1,x2,y2) (sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)))
+int lostCounter = 0;
 
 class HandTracker{
 private:
@@ -32,9 +32,6 @@ private:
 
     int recognize_guesture(){
         int gesture = 0;
-
-
-
         return gesture;
     }
 
@@ -54,6 +51,7 @@ public:
 
         switch(this->state){
             case LOST:
+				lostCounter++;
                 if(x >= 0 && y >= 0){
                     //cout << "found object at: " << x << "," << y << endl;
                     if(points.size() == MAX_POINTS) points.pop_front();
@@ -61,7 +59,11 @@ public:
                     last_pt = cv::Point2f(x,y);
                     this->state = TRACKING;
                 }else{
-                    points.clear();
+					if (lostCounter >= 30) {
+						cout << "I was here Bitches!" << endl;
+						points.clear();
+						lostCounter = 0;
+					}
                 }
                 break;
             case TRACKING:
