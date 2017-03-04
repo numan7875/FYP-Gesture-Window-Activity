@@ -69,50 +69,59 @@ int main(int argc, const char * argv[])
     int count_down_count = 0;
     bool debug = false;
 
-    while(running){
-        if(!cap.read(raw_img)){
-            cout << "failed to read from camera..." << endl;
-            return -1;
-        }
-        // Flip Mirror image to Normal Image
-        cv::flip(raw_img, raw_img, 1);
-        ui_img = raw_img.clone();
+	while (running) {
+		if (!cap.read(raw_img)) {
+			cout << "failed to read from camera..." << endl;
+			return -1;
+		}
+		// Flip Mirror image to Normal Image
+		cv::flip(raw_img, raw_img, 1);
+		ui_img = raw_img.clone();
 
-        // Find Hand
+		// Find Hand
 		cv::Rect hand_rect = hand_finder.find(raw_img);
 		cv::Point2f hand_pos(hand_rect.x + hand_rect.width / 2, hand_rect.y + hand_rect.height / 2);
-		if (hand_rect.width * hand_rect.height) {
+
+		if (hand_rect.width * hand_rect.height ) {
 			// hand found, draw bounding rect
 			/*if (debug)*/
 			cv::rectangle(ui_img, hand_rect.tl(), hand_rect.br(), cv::Scalar(0, 255, 0));
 			cv::circle(ui_img, hand_pos, 3, cv::Scalar(255, 0, 0));
-			imshow("Latest", ui_img);
+
+			// Only to show when detected
+			//imshow("Latest", ui_img);
+
 			// normalize hand position
 			hand_pos = cv::Point2f((float)hand_pos.x / (float)raw_img.cols, (float)hand_pos.y / (float)raw_img.rows);
 		} else {
-            // no hands found
-            hand_pos = cv::Point2f(-1.0f,-1.0f);
-        }
-
-        // track hand
-        hand_tracker.track(hand_pos.x, hand_pos.y);
-
-        // get hand trace
-        list<cv::Point2f> hand_points = hand_tracker.get_current_trace();
-
-        // recognize gesture
-		/* Format Image*/
-		std::list<Point2f>::const_iterator iterator;
-		std::list<Point2f>::const_iterator temp;
-		iterator = hand_points.end();
-		iterator--;
-		for (; (iterator != hand_points.end());iterator--) {
-
-			Point x((*iterator).x * gestureHeight, (*iterator).y * gestureWidth);
-			cv::line(gestureImage, x ,Point((*iterator).x * gestureHeight ,(*iterator).y * gestureWidth), gestureLineColor, gestureThickness);
-
+			// no hands found
+			hand_pos = cv::Point2f(-1.0f, -1.0f);
 		}
-		string output = recognizerChar.recognizeCharacter(gestureImage);
+
+		// track hand
+		hand_tracker.track(hand_pos.x, hand_pos.y);
+
+		// get hand trace
+		list<cv::Point2f> hand_points = hand_tracker.get_current_trace();
+
+		// recognize gesture
+		/* Format Image*/
+		if (hand_points.size() >  maxLineSize + 2) {
+			std::list<Point2f>::const_iterator iterator;
+			std::list<Point2f>::const_iterator temp;
+
+			iterator = hand_points.end() ;
+			iterator--;
+
+			for (; (iterator != hand_points.begin()); ) {
+				Point x((*iterator).x * gestureHeight, (*iterator).y * gestureWidth);
+				iterator--;
+				// De-Normalizing and drawing line on the image to test gesture
+				cv::line(gestureImage, x ,Point((*iterator).x * gestureHeight ,(*iterator).y * gestureWidth), gestureLineColor, gestureThickness);
+			}
+			string gestureDetected = recognizerChar.recognizeCharacter(gestureImage);
+			cout << gestureDetected << endl;
+		}
 
         // draw hand trace
         if(hand_points.size()>0){

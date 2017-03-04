@@ -12,9 +12,11 @@ using namespace std;
 #define MAX_FRAME_DISTANCE 0.5f
 #define SMOOTH_COEFFICIENT 0.5f
 #define MAX_POINTS 128
+#define GESTURE_TIME_LIMIT 2
 
 #define DISTANCE(x1,y1,x2,y2) (sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)))
 int lostCounter = 0;
+int losingCounter = 0;
 
 class HandTracker{
 private:
@@ -58,9 +60,9 @@ public:
                     points.push_back(cv::Point2f(x,y));
                     last_pt = cv::Point2f(x,y);
                     this->state = TRACKING;
+					lostCounter = 0;
                 }else{
-					if (lostCounter >= 30) {
-						cout << "I was here Bitches!" << endl;
+					if (lostCounter >= GESTURE_TIME_LIMIT) {
 						points.clear();
 						lostCounter = 0;
 					}
@@ -85,7 +87,7 @@ public:
                 }else{
                     //cout << "losing object..." << endl;
                     this->state = LOSING;
-                    points.clear();
+                    //points.clear();
                 }
                 break;
             case LOSING:
@@ -100,7 +102,7 @@ public:
                         //cout << "lost!" << endl;
                         losing_frames = MAX_LOSING_FRAMES;
                         this->state = LOST;
-                        points.clear();
+					    //points.clear();
                     }
                 }
                 break;
