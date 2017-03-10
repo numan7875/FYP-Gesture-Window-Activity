@@ -9,9 +9,9 @@
 using namespace std;
 
 #define MAX_LOSING_FRAMES 5
-#define MAX_FRAME_DISTANCE 0.5f
+#define MAX_FRAME_DISTANCE 0.2f
 #define SMOOTH_COEFFICIENT 0.5f
-#define MAX_POINTS 128
+#define MAX_POINTS 20
 #define GESTURE_TIME_LIMIT 2
 
 #define DISTANCE(x1,y1,x2,y2) (sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)))
@@ -20,14 +20,6 @@ int losingCounter = 0;
 
 class HandTracker{
 private:
-    /*
-    struct Point{
-        float x;
-        float y;
-        Point() { Point(0.0f,0.0f); }
-        Point(float _x,float _y):x(_x),y(_y){}
-    };
-    */
 
     enum state_t {LOST, TRACKING, LOSING} state;
     list<cv::Point2f> points;
@@ -41,6 +33,11 @@ public:
     HandTracker(){
         state = LOST;
     }
+
+	// Clear when detected
+	void clearPoints() {
+		points.clear();
+	}
 
     list<cv::Point2f> get_current_trace(){
         return points;

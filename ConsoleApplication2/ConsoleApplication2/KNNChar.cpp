@@ -2,7 +2,27 @@
 
 
 
-KNNChar::KNNChar() {}
+KNNChar::KNNChar() {
+	cv::FileStorage fsClassifications("classifications.xml", cv::FileStorage::READ);        // open the classifications file
+
+    if (fsClassifications.isOpened() == false) {                                                    // if the file was not opened successfully
+        std::cout << "error, unable to open training classifications file, exiting program\n\n";    // show error message
+		exit(0);
+    }
+
+    fsClassifications["classifications"] >> matClassificationInts;      // read classifications section into Mat classifications variable
+    fsClassifications.release();                                        // close the classifications file
+
+	cv::FileStorage fsTrainingImages("images.xml", cv::FileStorage::READ);          // open the training images file
+
+    if (fsTrainingImages.isOpened() == false) {                                                 // if the file was not opened successfully
+        std::cout << "error, unable to open training images file, exiting program\n\n";         // show error message
+		exit(0);
+    }
+
+    fsTrainingImages["images"] >> matTrainingImagesAsFlattenedFloats;           // read images section into Mat training images variable
+    fsTrainingImages.release();                                                 // close the training images file
+}
 
 
 KNNChar::~KNNChar() {}
@@ -12,33 +32,9 @@ std::string KNNChar::recognizeCharacter(cv::Mat testImage) {
     std::vector<ContourWithData> allContoursWithData;           // declare empty vectors,
     std::vector<ContourWithData> validContoursWithData;         // we will fill these shortly
 
-            // read in training classifications ///////////////////////////////////////////////////
+            /* read in training classifications */
 
-    cv::Mat matClassificationInts;      // we will read the classification numbers into this variable as though it is a vector
-
-    cv::FileStorage fsClassifications("classifications.xml", cv::FileStorage::READ);        // open the classifications file
-
-    if (fsClassifications.isOpened() == false) {                                                    // if the file was not opened successfully
-        std::cout << "error, unable to open training classifications file, exiting program\n\n";    // show error message
-        return(0);                                                                                  // and exit program
-    }
-
-    fsClassifications["classifications"] >> matClassificationInts;      // read classifications section into Mat classifications variable
-    fsClassifications.release();                                        // close the classifications file
-
-            // read in training images ////////////////////////////////////////////////////////////
-
-    cv::Mat matTrainingImagesAsFlattenedFloats;         // we will read multiple images into this single image variable as though it is a vector
-
-    cv::FileStorage fsTrainingImages("images.xml", cv::FileStorage::READ);          // open the training images file
-
-    if (fsTrainingImages.isOpened() == false) {                                                 // if the file was not opened successfully
-        std::cout << "error, unable to open training images file, exiting program\n\n";         // show error message
-        return(0);                                                                              // and exit program
-    }
-
-    fsTrainingImages["images"] >> matTrainingImagesAsFlattenedFloats;           // read images section into Mat training images variable
-    fsTrainingImages.release();                                                 // close the training images file
+            /* read in training images */
 
             // train //////////////////////////////////////////////////////////////////////////////
 
@@ -132,7 +128,7 @@ std::string KNNChar::recognizeCharacter(cv::Mat testImage) {
 
         float fltCurrentChar = (float)matCurrentChar.at<float>(0, 0);
 
-        strFinalString = strFinalString + char(int(fltCurrentChar));        // append current char to full string
+        strFinalString = /*strFinalString + */char(int(fltCurrentChar));        // append current char to full string
     }
 
     std::cout << "\n\n" << "numbers read = " << strFinalString << "\n\n";       // show the full string

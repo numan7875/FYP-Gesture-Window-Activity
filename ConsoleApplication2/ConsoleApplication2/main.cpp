@@ -5,10 +5,12 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include <iterator>
+#include <time.h>
 
 #include "HandDetection\HandFinder.h"
 #include "HandDetection\HandTracker.h"
 #include "KNNChar.h"
+#include "WindowActivity.h"
 
 using namespace cv;
 using namespace std;
@@ -31,9 +33,10 @@ int main(int argc, const char * argv[])
 {
     //print_help();
 
-    HandFinder hand_finder("cascade.xml");
+    HandFinder hand_finder("palm.xml");
     HandTracker hand_tracker;
 	KNNChar recognizerChar;
+	WindowActivity windowActivity;
 
 
 
@@ -51,6 +54,7 @@ int main(int argc, const char * argv[])
     cv::Mat ui_img;
     cv::Mat pic = cv::Mat::zeros(gestureHeight, gestureWidth, CV_8UC1);
 	cv::Mat gestureImage(gestureHeight, gestureWidth, CV_8UC3, gestureBackground);
+	cv::Mat tempImage = gestureImage.clone();
 
 
 
@@ -68,6 +72,8 @@ int main(int argc, const char * argv[])
     float score_threshold = 0.8f;
     int count_down_count = 0;
     bool debug = false;
+	clock_t start = clock();
+	int first = 0;
 
 	while (running) {
 		if (!cap.read(raw_img)) {
@@ -88,7 +94,8 @@ int main(int argc, const char * argv[])
 			cv::rectangle(ui_img, hand_rect.tl(), hand_rect.br(), cv::Scalar(0, 255, 0));
 			cv::circle(ui_img, hand_pos, 3, cv::Scalar(255, 0, 0));
 
-			// Only to show when detected
+			/* Only to show when detected */
+
 			//imshow("Latest", ui_img);
 
 			// normalize hand position
@@ -119,8 +126,22 @@ int main(int argc, const char * argv[])
 				// De-Normalizing and drawing line on the image to test gesture
 				cv::line(gestureImage, x ,Point((*iterator).x * gestureHeight ,(*iterator).y * gestureWidth), gestureLineColor, gestureThickness);
 			}
-			string gestureDetected = recognizerChar.recognizeCharacter(gestureImage);
-			cout << gestureDetected << endl;
+			cout << ((clock()  * 1000 / CLOCKS_PER_SEC)) - ((start  * 1000 / CLOCKS_PER_SEC) )<<endl;
+			if ( first == 0 || ((clock() * 1000 / CLOCKS_PER_SEC)) - ((start  * 1000/ CLOCKS_PER_SEC)) > 2000) {
+				string gestureDetected = recognizerChar.recognizeCharacter(gestureImage);
+				gestureImage = tempImage.clone();
+				first = 1;
+				// stop for input and clear gesture signal
+				if (windowActivity.performAction(gestureDetected)) {
+
+					//Clear when detected
+					hand_tracker.clearPoints();
+					hand_points.clear();
+
+					start = clock();
+					cout << gestureDetected << "  Hand Point size :: " << hand_points.size() << endl;
+				}
+			}
 		}
 
         // draw hand trace
@@ -133,24 +154,6 @@ int main(int argc, const char * argv[])
                 cv::line(ui_img, pt1, pt2, cv::Scalar(255,0,255), 2);
             }
         }
-
-		//Our Customize Code
-		//if (hand_points.size() > maxLineSize + 2)
-		//{
-		//	std::list<Point2f>::const_iterator iterator;
-		//	std::list<Point2f>::const_iterator temp;
-		//	int count = maxLineSize;
-		//	iterator = hand_points.end();
-		//	iterator--;
-		//	for (; count && (iterator != hand_points.end()); --count) {
-
-		//		Point x((*iterator).x * gestureHeight, (*iterator).y * gestureWidth);
-		//		iterator--;
-		//		cv::line(gestureImage, x ,Point((*iterator).x * gestureHeight ,(*iterator).y * gestureWidth), gestureLineColor, gestureThickness);
-
-		//	}
-		//	/*cv::imwrite("gesture.jpg", gestureImage);*/
-		//}
         if(debug){
             // draw normalized hand trace
             if(hand_npoints.size()>0){
@@ -163,13 +166,9 @@ int main(int argc, const char * argv[])
                     cv::line(ui_img, pt1, pt2, cv::Scalar(0,0,255), 1);
                 }
             }
-
-            // draw template trace
-            //one_dollar.cv_draw_template(ui_img, template_id);
         }
 
-        imshow("ui", ui_img);
-        imshow("pic", pic);
+		imshow("ui", ui_img);
 
         string gesture_str[4] = {"circle", "pigtail", "triangle", "victory"};
 

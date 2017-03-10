@@ -18,8 +18,6 @@ public:
 	KNNChar();
 	~KNNChar();
 
-
-
 	class ContourWithData {
 	public:
 		/* member variables */
@@ -40,5 +38,9 @@ public:
 	};
 
 	std::string recognizeCharacter(cv::Mat testImage);
+private:
+	cv::Mat matClassificationInts;      // we will read the classification numbers into this variable as though it is a vector
+	cv::Mat matTrainingImagesAsFlattenedFloats;         // we will read multiple images into this single image variable as though it is a vector
+
 };
 
