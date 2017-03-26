@@ -22,12 +22,7 @@ const int gestureThickness = 2;
 const int gestureHeight = 480;
 const int gestureWidth = 640;
 
-//void print_help(){
-//    cout << "Simple hand tracking demo.\n" << \
-//            "   [*] press 'd' to toggle debug mode.\n" << \
-//            "   [*] press SPACE to change gesture template.\n" << \
-//            "   [*] press ESC to exit.\n" << endl;
-//}
+
 
 int main(int argc, const char * argv[])
 {
