@@ -22,6 +22,19 @@ void WindowActivity::keyRelease(WORD key) {
 	SendInput(1, &inputEvent, sizeof(INPUT));
 }
 
+void WindowActivity::getResolution(int & height, int & width) {
+	RECT desktop;
+   // Get a handle to the desktop window
+   const HWND hDesktop = GetDesktopWindow();
+   // Get the size of screen to the variable desktop
+   GetWindowRect(hDesktop, &desktop);
+   // The top left corner will have coordinates (0,0)
+   // and the bottom right corner will have coordinates
+   // (width, height)
+   height = desktop.bottom;
+   width = desktop.right;
+}
+
 bool WindowActivity::performAction(std::string action) {
 	if (action == "c" || action == "C") {
 		keyPress(VK_CONTROL);
@@ -39,5 +52,36 @@ bool WindowActivity::performAction(std::string action) {
 	}
 	return false;
 }
+
+// x is width, y is height
+void WindowActivity::overrideMouse(float x, float y, int height, int width) {
+	if (x != -1 && y != -1) {
+			double factor = 1;
+
+			int screenHeight, screenWidth;
+			//get Resolution
+			getResolution(screenHeight, screenWidth);
+
+
+			POINT point;
+			GetCursorPos(&point);
+
+			//int newx = point.x - prevWidth + x * screenWidth * factor;
+			//int newy = point.y - prevHeight + y * screenHeight * factor;
+			//
+
+			SetCursorPos(point.x - x * screenWidth, point.y - y * screenHeight);
+
+			//
+			//GetCursorPos(&point);
+
+			//prevHeight = point.y;
+			//prevWidth = point.x;
+
+	}
+
+}
+
+
 
 WindowActivity::~WindowActivity() {}

@@ -99,16 +99,34 @@ int main(int argc, const char * argv[])
 			// no hands found
 			hand_pos = cv::Point2f(-1.0f, -1.0f);
 		}
-
 		// track hand
 		hand_tracker.track(hand_pos.x, hand_pos.y);
 
 		// get hand trace
 		list<cv::Point2f> hand_points = hand_tracker.get_current_trace();
+		
+		if (hand_points.size() >= 2) {
+			if (hand_tracker.getState() != 0 && hand_tracker.getState() != 2) {
+				Point2f pointOf = hand_points.back();
+				hand_points.pop_back();
+				Point2f secPointOf = hand_points.back();
+
+				hand_points.push_back(pointOf);
+
+				float newx = secPointOf.x - pointOf.x;
+				float newy = secPointOf.y - pointOf.y;
+
+				//Override Mouse
+				cout << "state " << ((hand_tracker.getState() == 1) ? "TRACKING" : "LOST") << endl;
+				windowActivity.overrideMouse(newx, newy, gestureHeight, gestureWidth);
+			}
+		}
+
+
 
 		// recognize gesture
 		/* Format Image*/
-		if (hand_points.size() >  maxLineSize + 2) {
+		/*if (hand_points.size() >  maxLineSize + 2) {
 			std::list<Point2f>::const_iterator iterator;
 			std::list<Point2f>::const_iterator temp;
 
@@ -137,11 +155,12 @@ int main(int argc, const char * argv[])
 					cout << gestureDetected << "  Hand Point size :: " << hand_points.size() << endl;
 				}
 			}
-		}
+		}*/
+
 
 		// draw hand trace
-		if(hand_points.size()>0){
-			for(list<cv::Point2f>::iterator it=hand_points.begin(), jt=--hand_points.end(); it!=jt;++it){
+		if(hand_points.size()>= 1 ){
+			for(list<cv::Point2f>::iterator it = hand_points.begin(), jt=--hand_points.end(); it!=jt;++it){
 				cv::Point pt1((int)(it->x*ui_img.cols), (int)(it->y*ui_img.rows));
 				++it;
 				cv::Point pt2((int)(it->x*ui_img.cols), (int)(it->y*ui_img.rows));
